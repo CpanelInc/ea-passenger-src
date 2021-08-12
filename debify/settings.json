@@ -1,0 +1,5 @@
+{
+   "source_tarball_regex": "release",
+   "put_source0_in_sources": 1,
+   "ignore_override_dh_auto_configure": 1
+}
