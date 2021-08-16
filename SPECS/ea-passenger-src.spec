@@ -1,4 +1,4 @@
-Summary: Phusion Passenger application server
+Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
@@ -17,6 +17,8 @@ URL: https://www.phusionpassenger.com
 
 Source0: release-%{version}.tar.gz
 Source1: cxxcodebuilder.tar.gz
+
+AutoReqProv: no
 
 %description
 Phusion Passenger(r) is a web server and application server, designed to be fast,
