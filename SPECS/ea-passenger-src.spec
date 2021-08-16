@@ -38,6 +38,10 @@ tar xzf %{SOURCE1} \
 # since we rely on the system ruby there is no need to run
 #   update_ruby_shebang.pl in %{buildroot}/opt/cpanel/ea-passenger-src
 
+# C8 barfs without this but do it for everyone for consisteny, C6 might not get it but everything else should
+perl -pi -e 's{#!/usr/bin/env python}{/usr/bin/python3}' \
+    %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}/src/cxx_supportlib/vendor-copy/libuv/gyp_uv.py
+
 %files
 /opt/cpanel/ea-passenger-src/
 
