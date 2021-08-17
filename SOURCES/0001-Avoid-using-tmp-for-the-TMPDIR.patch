@@ -19,7 +19,7 @@ index 8f9cbe7..c7b2499 100644
  	const char *temp_dir = getenv("TMPDIR");
  	if (temp_dir == NULL || *temp_dir == '\0') {
 -		temp_dir = "/tmp";
-+		temp_dir = "/var/run/ea-ruby27-passenger";
++		temp_dir = "/var/run/ea-passenger-runtime";
  	}
  	return temp_dir;
  }
@@ -32,7 +32,7 @@ index f1432f2..82ed066 100644
          end
        end
 -      return Dir['/tmp/systemd-private-*-{httpd,nginx}.service-*/tmp'].first || "/tmp"
-+      return Dir['/tmp/systemd-private-*-{httpd,nginx}.service-*/tmp'].first || "/var/run/ea-ruby27-passenger"
++      return Dir['/tmp/systemd-private-*-{httpd,nginx}.service-*/tmp'].first || "/var/run/ea-passenger-runtime"
      end
  
      def self.process_is_alive?(pid)
