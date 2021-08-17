@@ -59,7 +59,7 @@ for script in `find . -type f ! -perm /a+x -name "*.rb"`; do
 done
 
 # C8 barfs without this but do it for everyone for consisteny, C6 might not get it but everything else should
-perl -pi -e 's{#!/usr/bin/env python}{/usr/bin/python3}' \
+perl -pi -e 's{#!/usr/bin/env python}{#!/usr/bin/python3}' \
     src/cxx_supportlib/vendor-copy/libuv/gyp_uv.py
 
 # since we rely on the system ruby there is no need to run
@@ -67,8 +67,13 @@ perl -pi -e 's{#!/usr/bin/env python}{/usr/bin/python3}' \
 
 %install
 
-mkdir -p %{buildroot}/opt/cpanel/ea-passenger-src
-cp -rf ./* %{buildroot}/opt/cpanel/ea-passenger-src/
+if [ "$0" == "debian/override_dh_auto_install.sh" ]; then
+    mkdir -p opt/cpanel/ea-passenger-src/passenger-release-%{version}
+    find . ! -name . -prune ! -name opt ! -name debian -exec mv {} opt/cpanel/ea-passenger-src/passenger-release-%{version} \;
+else
+    mkdir -p %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}
+    cp -rf ./* %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}
+fi
 
 %files
 /opt/cpanel/ea-passenger-src/
