@@ -1,3 +1,5 @@
+%global debug_package %{nil}
+
 Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
@@ -20,6 +22,15 @@ Source1: cxxcodebuilder.tar.gz
 
 AutoReqProv: no
 
+# httpd on RHEL7 is using private /tmp. This break passenger status.
+# We workaround that by using "/var/run/ea-ruby27-passenger" instead of "/tmp".
+Patch0:         0001-Avoid-using-tmp-for-the-TMPDIR.patch
+# Supress logging of empty messages
+Patch1:         0002-Suppress-logging-of-empty-messages.patch
+# Add a new directive to Passenger that will allow us to disallow
+## Passenger directives in .htaccess files
+Patch2:         0003-Add-new-PassengerDisableHtaccess-directive.patch
+
 %description
 Phusion Passenger(r) is a web server and application server, designed to be fast,
 robust and lightweight. It takes a lot of complexity out of deploying web apps,
@@ -27,22 +38,42 @@ adds powerful enterprise-grade features that are useful in production,
 and makes administration much easier and less complex. It supports Ruby,
 Python, Node.js and Meteor.
 
-%install
+%prep
+%setup -n passenger-release-%{version}
 
-mkdir -p %{buildroot}/opt/cpanel/ea-passenger-src
-tar xzf %{SOURCE0} -C %{buildroot}/opt/cpanel/ea-passenger-src/
+%patch0 -p1 -b .tmpdir
+%patch1 -p1 -b .emptymsglog
+%patch2 -p1 -b .disablehtaccess
 
-# ^^^ tar creates ./passenger-release-%{version}/
+%build
+
+mkdir -p build/support/vendor/cxxcodebuilder/
 tar xzf %{SOURCE1} \
     --strip-components=1 \
-    -C %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}/build/support/vendor/cxxcodebuilder/
+    -C build/support/vendor/cxxcodebuilder/
+
+# Find files with a hash-bang that do not have executable permissions
+for script in `find . -type f ! -perm /a+x -name "*.rb"`; do
+    [ ! -z "`head -n 1 $script | grep \"^#!/\"`" ] && chmod -v 755 $script
+    /bin/true
+done
+
+# C8 barfs without this but do it for everyone for consisteny, C6 might not get it but everything else should
+perl -pi -e 's{#!/usr/bin/env python}{#!/usr/bin/python3}' \
+    src/cxx_supportlib/vendor-copy/libuv/gyp_uv.py
 
 # since we rely on the system ruby there is no need to run
 #   update_ruby_shebang.pl in %{buildroot}/opt/cpanel/ea-passenger-src
 
-# C8 barfs without this but do it for everyone for consisteny, C6 might not get it but everything else should
-perl -pi -e 's{#!/usr/bin/env python}{/usr/bin/python3}' \
-    %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}/src/cxx_supportlib/vendor-copy/libuv/gyp_uv.py
+%install
+
+if [ "$0" == "debian/override_dh_auto_install.sh" ]; then
+    mkdir -p opt/cpanel/ea-passenger-src/passenger-release-%{version}
+    find . ! -name . -prune ! -name opt ! -name debian -exec mv {} opt/cpanel/ea-passenger-src/passenger-release-%{version} \;
+else
+    mkdir -p %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}
+    cp -rf ./* %{buildroot}/opt/cpanel/ea-passenger-src/passenger-release-%{version}
+fi
 
 %files
 /opt/cpanel/ea-passenger-src/
