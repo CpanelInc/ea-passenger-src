@@ -9,6 +9,15 @@ For more details see the [Design Doc](DESIGN.md).
 # How to use this package
 
 1. Add this to the SPEC file: `BuildRequires: ea-passenger-src`
-2. In the `%build` sextion of the SPEC file copy the source to the package’s build directory:
+2. In the `%build` section of the SPEC file copy the source to the package’s build directory:
    * `cp -rf /opt/cpanel/ea-passenger-src/passenger-*/ %{buildroot}/_passenger_source_code`
 3. Use `%{buildroot}/_passenger_source_code` to configure and build the thing.
+4. See “ea-passenger-runtime” below for another important part of this process.
+
+## ea-passenger-runtime
+
+If you are using `ea-passenger-src` to compile passenger support in a package, that package will also need the shared runtime files.
+
+To accomplish this add this to that packages’s part of the SPEC file:
+
+`Requires: ea-passenger-runtime`
