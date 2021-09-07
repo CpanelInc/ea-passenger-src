@@ -32,7 +32,7 @@ It is confusing to need to require an Apache module in order for NGINX to build.
 
 This means we have one spot to keep passenger up to date instead of multiple or a single spot whose name seems out of place.
 
-This also allows for future things like ea-apache42 or ea-whatever to have its own seperate passenger thing while still sharing the common stuff with everything else.
+This also allows for future things like ea-apache42 or ea-whatever to have its own separate passenger thing while still sharing the common stuff with everything else.
 
 ### Do not provide ruby via EA4
 
@@ -52,6 +52,8 @@ In other words:
 
 * Passenger itself only cares about the ruby path it is configured to use. What ruby was used to build it is irrelevant at runtime.
 * Ruby applications only care about the ruby path each is configured to use.
+
+This also means that we could have `ea-apache24-mod-passenger` properly `Obsoletes` the `ea-ruby*-passenger`s if we can get it to build on all OSs (ATM C8 is really difficult). As it stands at the time of this writing they will all conflict at least.
 
 ## Maintainability
 
