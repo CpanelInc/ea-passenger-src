@@ -6,7 +6,7 @@ Name: ea-passenger-src
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
 %define release_prefix 1
 
-Version: 6.0.10
+Version: 6.0.13
 Release: %{release_prefix}%{?dist}.cpanel
 Group: System Environment/Daemons
 # Passenger code uses MIT license.
@@ -79,5 +79,8 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Mon Apr 18 2022 Cory McIntire <cory@cpanel.net> - 6.0.13-1
+- EA-10642: Update ea-passenger-src from v6.0.10 to v6.0.13
+
 * Thu Aug 12 2021 Dan Muey <dan@cpanel.net> - 6.0.10-1
 - ZC-9200: Initial version
