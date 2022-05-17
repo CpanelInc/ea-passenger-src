@@ -1,16 +1,17 @@
 #!/usr/local/cpanel/3rdparty/bin/perl
-# cpanel - ea4-tool-post-update                 Copyright(c) 2021 cPanel, L.L.C.
+# cpanel - ea4-tool-post-update                 Copyright(c) 2022 cPanel, L.L.C.
 #                                                           All rights Reserved.
 # copyright@cpanel.net                                         http://cpanel.net
 # This code is subject to the cPanel license. Unauthorized copying is prohibited
 
-package scl_phalcon4::ea4_tool_post_update;
+package ea_passenger_src::ea4_tool_post_update;
 
 use strict;
 use warnings;
 
 use lib "../ea-tools/lib/ea4_tool";    # assumes ea-tools is checked out next to this repo
 use ea4_tool::util ();
+use ea4_tool::util::gitapi;
 use File::chdir;
 use Path::Tiny;
 
@@ -19,9 +20,14 @@ exit( run(@ARGV) ? 0 : 1 ) if !caller;
 sub run {
     my ( $old_ver, $new_ver ) = @_;
 
-    system("$CWD/ea4-tool-post-update-cxxcodebuilder");
+    # Update the cxxcodebuilder sourceball
+    my $tarball_url      = 'https://github.com/phusion/cxxcodebuilder/archive/refs/heads/master.tar.gz';
+    my $tarball_location = 'SOURCES/cxxcodebuilder.tar.gz';
+    my $response         = ea4_tool::util::http()->mirror( $tarball_url, $tarball_location );
+    die "Unable to download the tarball ($tarball_url)" if ( !$response->{success} );
 
-    my $file      = 'debify/debian/source/include-binaries';
+    # Update the include binary for debian to the newest sourceball version
+    my $file  = 'debify/debian/source/include-binaries';
     my @lines = path($file)->lines;
     foreach my $line (@lines) {
         if ( $line =~ /\Q$old_ver\E/ ) {
@@ -35,12 +41,55 @@ sub run {
     my $git    = ea4_tool::util::git($CWD);
     my $branch = $git->current_branch();
 
+    $git->run( add    => $tarball_location );
     $git->run( add    => $file );
     $git->run( commit => "-m", "$branch: ea4-tool-post-update update include-binaries to new tarball" );
     ea4_tool::util::pushup( $git, $branch );
 
     print "Done!\n";
+    print "Update ea-apache24-mod-passenger from $old_ver to $new_ver";
+
+    my $case;
+    if ( $branch =~ m/^(.*)-ea-passenger-src$/ ) {
+        $case = $1;
+    }
+
+    die "Could not determine case" if !$case;
+
+    my $et        = '/root/git/ea-tools/bin/ea4-tool';
+    my $repo      = 'ea-apache24-mod-passenger';
+    my $changelog = "ea-passenger-src was updated from v$old_ver to v$new_ver";
+    my $cmd       = "$et change $repo $case '$changelog' $new_ver";
+    system($cmd) && warn "Could not update ‘$repo’! This will need done manually:\n\t$cmd\n";
+    _generate_pr( $repo, $changelog );
+
+    print "Done!\n";
     return 1;
+}
+
+sub _generate_pr {
+    my ( $repo, $changelog ) = @_;
+
+    my $repo_path = ea4_tool::util::get_path_of_repo($repo);
+    local $CWD = $repo_path;
+
+    my $git    = ea4_tool::util::git($CWD);
+    my $branch = $git->current_branch();
+
+    my $case;
+    if ( $branch =~ m/^(.*)-\Q$repo\E$/ ) {
+        $case = $1;
+    }
+    die "Could not determine case" if !$case;
+
+    ea4_tool::util::pushup( $git, "$branch" );
+
+    my $gitapi = ea4_tool::util::gitapi->new();
+    my $title  = "$case: $changelog";
+
+    $gitapi->create_pull_request( $repo => $title, $branch => "master" );
+
+    return;
 }
 
 1;
