@@ -1,4 +1,0 @@
-#!/bin/bash
-
-wget https://github.com/phusion/cxxcodebuilder/archive/refs/heads/master.tar.gz -O SOURCES/cxxcodebuilder.tar.gz
-git add SOURCES/cxxcodebuilder.tar.gz
