@@ -1,10 +1,8 @@
-%global debug_package %{nil}
-
 Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
-%define release_prefix 1
+%define release_prefix 2
 
 Version: 6.0.17
 Release: %{release_prefix}%{?dist}.cpanel
@@ -79,6 +77,9 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Mon May 08 2023 Julian Brown <julian.brown@cpanel.net> - 6.0.17-2
+- ZC-10936: Clean up Makefile and remove debug-package-nil
+
 * Sun Jan 29 2023 Cory McIntire <cory@cpanel.net> - 6.0.17-1
 - EA-11187: Update ea-passenger-src from v6.0.16 to v6.0.17
 
