@@ -47,7 +47,6 @@ sub run {
     ea4_tool::util::pushup( $git, $branch );
 
     print "Done!\n";
-    print "Update ea-apache24-mod-passenger from $old_ver to $new_ver";
 
     my $case;
     if ( $branch =~ m/^(.*)-ea-passenger-src$/ ) {
@@ -57,13 +56,16 @@ sub run {
     die "Could not determine case" if !$case;
 
     my $et        = '/root/git/ea-tools/bin/ea4-tool';
-    my $repo      = 'ea-apache24-mod-passenger';
     my $changelog = "ea-passenger-src was updated from v$old_ver to v$new_ver";
-    my $cmd       = "$et change $repo $case '$changelog' $new_ver";
-    system($cmd) && warn "Could not update ‘$repo’! This will need done manually:\n\t$cmd\n";
-    _generate_pr( $repo, $changelog );
 
-    print "Done!\n";
+    for my $repo (qw(ea-apache24-mod-passenger ea-nginx-passenger)) {
+        my $cmd = "$et change $repo $case '$changelog' $new_ver";
+        system($cmd) && warn "Could not update ‘$repo’! This will need done manually:\n\t$cmd\n";
+        _generate_pr( $repo, $changelog );
+
+        print "Done!\n";
+    }
+
     return 1;
 }
 
