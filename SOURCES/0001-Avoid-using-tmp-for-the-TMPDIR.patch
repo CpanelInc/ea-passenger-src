@@ -11,7 +11,7 @@ SCL package.
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/cxx_supportlib/Utils.cpp b/src/cxx_supportlib/Utils.cpp
-index 8f9cbe7..93eaa9c 100644
+index c66fecf..3ce0013 100644
 --- a/src/cxx_supportlib/Utils.cpp
 +++ b/src/cxx_supportlib/Utils.cpp
 @@ -265,7 +265,7 @@ const char *
