@@ -89,7 +89,7 @@ sub _generate_pr {
     my $gitapi = ea4_tool::util::gitapi->new();
     my $title  = "$case: $changelog";
 
-    $gitapi->create_pull_request( $repo => $title, $branch => "master" );
+    $gitapi->create_pull_request( $repo => $title, $branch => "main" );
 
     return;
 }
