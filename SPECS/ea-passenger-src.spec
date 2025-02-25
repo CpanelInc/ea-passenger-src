@@ -79,6 +79,7 @@ fi
 %changelog
 * Wed Feb 19 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.26-1
 - EA-12725: Update ea-passenger-src from v6.0.25 to v6.0.26
+  * [CVE-2025-26803] The http parser (from Passenger 6.0.21-6.0.25) was susceptible to a denial of service attack when parsing a request with an invalid HTTP method.
 
 * Wed Feb 12 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.25-1
 - EA-12705: Update ea-passenger-src from v6.0.24 to v6.0.25
