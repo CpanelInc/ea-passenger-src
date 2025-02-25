@@ -4,7 +4,7 @@ Name: ea-passenger-src
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
 %define release_prefix 1
 
-Version: 6.0.25
+Version: 6.0.26
 Release: %{release_prefix}%{?dist}.cpanel
 Group: System Environment/Daemons
 # Passenger code uses MIT license.
@@ -77,6 +77,10 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Wed Feb 19 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.26-1
+- EA-12725: Update ea-passenger-src from v6.0.25 to v6.0.26
+  * [CVE-2025-26803] The http parser (from Passenger 6.0.21-6.0.25) was susceptible to a denial of service attack when parsing a request with an invalid HTTP method.
+
 * Wed Feb 12 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.25-1
 - EA-12705: Update ea-passenger-src from v6.0.24 to v6.0.25
 
