@@ -2,7 +2,7 @@ Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
-%define release_prefix 1
+%define release_prefix 2
 
 Version: 6.1.0
 Release: %{release_prefix}%{?dist}.cpanel
@@ -29,6 +29,8 @@ Patch1:         0002-Suppress-logging-of-empty-messages.patch
 ## Passenger directives in .htaccess files
 Patch2:         0003-Add-new-PassengerDisableHtaccess-directive.patch
 
+Patch3:         0004-Fix-AlmaLinux-10-build-add-host-flag-support-for-lib.patch
+
 %description
 Phusion Passenger(r) is a web server and application server, designed to be fast,
 robust and lightweight. It takes a lot of complexity out of deploying web apps,
@@ -42,6 +44,14 @@ Python, Node.js and Meteor.
 %patch0 -p1 -b .tmpdir
 %patch1 -p1 -b .emptymsglog
 %patch2 -p1 -b .disablehtaccess
+
+%if 0%{?rhel} >= 10
+%patch3 -p1 -b .hostflagsupport
+# Package consuming this src ball will need:
+# %if 0%{?rhel} >= 10
+# export LIBEV_CONFIGURE_HOST=x86_64-redhat-linux-gnu
+# %endif
+%endif
 
 %build
 
@@ -77,6 +87,9 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Thu Dec 11 2025 Dan Muey <daniel.muey@webpros.com> - 6.1.0-2
+- EA4-223: Move A10 host-flag-support from Apache module that uses this src ball (that way NGINX benefits form it too w/out duplicating efforts)
+
 * Tue Sep 23 2025 Dan Muey <daniel.muey@webpros.com> - 6.1.0-1
 - EA-13128: Update ea-passenger-src from v6.0.27 to v6.1.0
 
