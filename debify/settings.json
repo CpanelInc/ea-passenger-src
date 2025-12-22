@@ -3,6 +3,9 @@
    "source_tarball_regex": "release",
    "put_source0_in_sources": 1,
    "adjust_install_file_src": [ [ "^debian/tmp/(.*)", "$1" ] ],
+   "remove_from_patches": [
+      "0004-Fix-AlmaLinux-10-build-add-host-flag-support-for-lib.patch"
+   ],
    "remove_from_install": [
       "\\.tmpdir$",
       "\\.emptymsglog$",
