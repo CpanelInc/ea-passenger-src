@@ -1,7 +1,7 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Cory McIntire <cory.mcintire@webpros.com>
 Date: Mon, 17 Nov 2025 16:14:19 -0600
-Subject: [PATCH] Fix AlmaLinux 10 build: add --host flag support for
+Subject: [PATCH 4/4] Fix AlmaLinux 10 build: add --host flag support for
  libev/libuv configure
 
 ---
@@ -9,7 +9,7 @@ Subject: [PATCH] Fix AlmaLinux 10 build: add --host flag support for
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/build/common_library.rb b/build/common_library.rb
-index 4a1528e..a9f0ff0 100644
+index af677ff..8b56edc 100644
 --- a/build/common_library.rb
 +++ b/build/common_library.rb
 @@ -131,6 +131,7 @@ def define_libboost_oxt_task(namespace, output_dir, extra_compiler_flags = nil)
