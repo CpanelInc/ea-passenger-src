@@ -12,8 +12,11 @@ use warnings;
 use lib "../ea-tools/lib/ea4_tool";    # assumes ea-tools is checked out next to this repo
 use ea4_tool::util ();
 use ea4_tool::util::gitapi;
+use ea4_tool::cmd::change  ();
+use ea4_tool::cmd::refresh ();
 use File::chdir;
 use Path::Tiny;
+use Try::Tiny;
 
 exit( run(@ARGV) ? 0 : 1 ) if !caller;
 
@@ -55,41 +58,38 @@ sub run {
 
     die "Could not determine case" if !$case;
 
-    my $et        = '/root/git/ea-tools/bin/ea4-tool';
     my $changelog = "ea-passenger-src was updated from v$old_ver to v$new_ver";
 
     for my $repo (qw(ea-apache24-mod-passenger ea-nginx-passenger)) {
-        my $cmd = "$et change $repo $case '$changelog' $new_ver";
-        system($cmd) && warn "Could not update ‘$repo’! This will need done manually:\n\t$cmd\n";
-        _generate_pr( $repo, $changelog );
-
+        _update_dependent_pkg( $new_ver, $repo, $case, $changelog );
         print "Done!\n";
     }
 
     return 1;
 }
 
-sub _generate_pr {
-    my ( $repo, $changelog ) = @_;
+sub _update_dependent_pkg {
+    my ( $new_ver, $repo, $case, $changelog ) = @_;
 
-    my $repo_path = ea4_tool::util::get_path_of_repo($repo);
-    local $CWD = $repo_path;
-
-    my $git    = ea4_tool::util::git($CWD);
-    my $branch = $git->current_branch();
-
-    my $case;
-    if ( $branch =~ m/^(.*)-\Q$repo\E$/ ) {
-        $case = $1;
+    local $CWD = try {
+        ea4_tool::util::get_path_of_repo($repo);
     }
-    die "Could not determine case" if !$case;
+    catch {
+        ea4_tool::cmd::refresh::run();
+        ea4_tool::util::get_path_of_repo($repo);
+    };
 
-    ea4_tool::util::pushup( $git, "$branch" );
+    ea4_tool::cmd::change::run( undef, $repo, $case, $changelog, $new_ver );
+
+    my $git     = ea4_tool::util::git($CWD);
+    my $branch  = $git->current_branch();
+    my $default = ea4_tool::util::git_default_branch($git);
+
+    ea4_tool::util::pushup( $git, $branch );
 
     my $gitapi = ea4_tool::util::gitapi->new();
     my $title  = "$case: $changelog";
-
-    $gitapi->create_pull_request( $repo => $title, $branch => "main" );
+    $gitapi->create_pull_request( $repo => $title, $branch => $default );
 
     return;
 }
