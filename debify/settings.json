@@ -1,6 +1,6 @@
 {
    "ignore_clean" : 1,
-   "source_tarball_regex": "release",
+   "source_tarball_regex": "release-6.1.5",
    "put_source0_in_sources": 1,
    "adjust_install_file_src": [ [ "^debian/tmp/(.*)", "$1" ] ],
    "remove_from_patches": [
