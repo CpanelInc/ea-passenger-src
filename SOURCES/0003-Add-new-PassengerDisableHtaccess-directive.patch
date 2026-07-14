@@ -1917,7 +1917,7 @@ index 0000000..79326b8
 +} // namespace Apache2Module
 +} // namespace Passenger
 diff --git a/src/ruby_supportlib/phusion_passenger/apache2/config_options.rb b/src/ruby_supportlib/phusion_passenger/apache2/config_options.rb
-index 71dec9a..d69c33a 100644
+index 84e3875..b347954 100644
 --- a/src/ruby_supportlib/phusion_passenger/apache2/config_options.rb
 +++ b/src/ruby_supportlib/phusion_passenger/apache2/config_options.rb
 @@ -277,6 +277,14 @@

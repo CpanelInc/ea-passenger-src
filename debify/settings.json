@@ -1,8 +1,9 @@
 {
    "ignore_clean" : 1,
-   "source_tarball_regex": "release-6.1.5",
+   "source_tarball_regex": "release-6.1.7",
    "put_source0_in_sources": 1,
-   "adjust_install_file_src": [ [ "^debian/tmp/(.*)", "$1" ] ],
+   "adjust_install_file_src": [ [ "^debian/tmp/(.*)", "$1" ], [ "^(.*)passenger-release-6\\.1\\.5(.*)$", "$1passenger-release-6.1.7$2" ] ],
+   "adjust_install_file_dst": [ [ "^(.*)passenger-release-6\\.1\\.5(.*)$", "$1passenger-release-6.1.7$2" ] ],
    "remove_from_patches": [
       "0004-Fix-AlmaLinux-10-build-add-host-flag-support-for-lib.patch"
    ],
