@@ -2,7 +2,7 @@ Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
-%define release_prefix 1
+%define release_prefix 2
 
 Version: 6.1.8
 Release: %{release_prefix}%{?dist}.cpanel
@@ -31,6 +31,9 @@ Patch2:         0003-Add-new-PassengerDisableHtaccess-directive.patch
 
 Patch3:         0004-Fix-AlmaLinux-10-build-add-host-flag-support-for-lib.patch
 
+# Security hardening of the agent API server authorization boundary
+Patch4:         0008-Fail-closed-on-empty-API-account-database.patch
+
 %description
 Phusion Passenger(r) is a web server and application server, designed to be fast,
 robust and lightweight. It takes a lot of complexity out of deploying web apps,
@@ -52,6 +55,12 @@ Python, Node.js and Meteor.
 # export LIBEV_CONFIGURE_HOST=x86_64-redhat-linux-gnu
 # %endif
 %endif
+
+# Deliberately no -b backup suffix. This is a security patch, and a backup suffix
+# leaves the pre-patch file in the source tree, which this package then copies
+# wholesale into the shipped /opt/cpanel/ea-passenger-src/ directory - handing every
+# host a readable copy of the unfixed code.
+%patch4 -p1
 
 %build
 
@@ -87,6 +96,9 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Thu Aug 13 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.1.8-2
+- SEC-75753: Security hardening.
+
 * Wed Jul 22 2026 EA4 Update Bot <cory.mcintire@webpros.com> - 6.1.8-1
 - EA-13509: Update ea-passenger-src from v6.1.7 to v6.1.8
 
