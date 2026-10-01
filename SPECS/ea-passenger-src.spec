@@ -31,9 +31,6 @@ Patch2:         0003-Add-new-PassengerDisableHtaccess-directive.patch
 
 Patch3:         0004-Fix-AlmaLinux-10-build-add-host-flag-support-for-lib.patch
 
-# Security hardening of the agent API server authorization boundary
-Patch4:         0008-Fail-closed-on-empty-API-account-database.patch
-
 %description
 Phusion Passenger(r) is a web server and application server, designed to be fast,
 robust and lightweight. It takes a lot of complexity out of deploying web apps,
@@ -55,12 +52,6 @@ Python, Node.js and Meteor.
 # export LIBEV_CONFIGURE_HOST=x86_64-redhat-linux-gnu
 # %endif
 %endif
-
-# Deliberately no -b backup suffix. This is a security patch, and a backup suffix
-# leaves the pre-patch file in the source tree, which this package then copies
-# wholesale into the shipped /opt/cpanel/ea-passenger-src/ directory - handing every
-# host a readable copy of the unfixed code.
-%patch4 -p1
 
 %build
 
