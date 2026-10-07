@@ -1,2 +1,3 @@
 debian/SOURCES_FROM_SPEC/release-6.2.0.tar.gz
 debian/SOURCES_FROM_SPEC/cxxcodebuilder.tar.gz
+debian/SOURCES_FROM_SPEC/cxx_hinted_parser.tar.gz
