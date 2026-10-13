@@ -2,7 +2,7 @@ Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
-%define release_prefix 1
+%define release_prefix 2
 
 Version: 6.2.0
 Release: %{release_prefix}%{?dist}.cpanel
@@ -17,6 +17,8 @@ URL: https://www.phusionpassenger.com
 
 Source0: release-%{version}.tar.gz
 Source1: cxxcodebuilder.tar.gz
+# Upstream submodule, empty in the release tarball; pinned to the commit release-6.2.0 uses
+Source2: cxx_hinted_parser.tar.gz
 
 AutoReqProv: no
 
@@ -60,6 +62,11 @@ tar xzf %{SOURCE1} \
     --strip-components=1 \
     -C build/support/vendor/cxxcodebuilder/
 
+mkdir -p build/support/vendor/cxx_hinted_parser/
+tar xzf %{SOURCE2} \
+    --strip-components=1 \
+    -C build/support/vendor/cxx_hinted_parser/
+
 # Find files with a hash-bang that do not have executable permissions
 for script in `find . -type f ! -perm /a+x -name "*.rb"`; do
     [ ! -z "`head -n 1 $script | grep \"^#!/\"`" ] && chmod -v 755 $script
@@ -87,6 +94,9 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Wed Oct 07 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.2.0-2
+- EA-13588: Vendor the cxx_hinted_parser submodule so builds are deterministic
+
 * Thu Oct 01 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.2.0-1
 - EA-13533: Update ea-passenger-src from v6.1.8 to v6.2.0
 
