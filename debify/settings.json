@@ -11,6 +11,8 @@
       "\\.tmpdir$",
       "\\.emptymsglog$",
       "\\.disablehtaccess$",
+      "\\.hostflagsupport$",
+      "\\.orig$",
       "boost/regex/v4/match_results\\.hpp$",
       "boost/regex/v4/u32regex_token_iterator\\.hpp$",
       "boost/regex/v4/unicode_iterator\\.hpp$",

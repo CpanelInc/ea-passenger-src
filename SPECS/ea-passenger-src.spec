@@ -2,7 +2,7 @@ Summary: Phusion Passenger application server Source Code
 Name: ea-passenger-src
 
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4590 for more details
-%define release_prefix 2
+%define release_prefix 3
 
 Version: 6.2.0
 Release: %{release_prefix}%{?dist}.cpanel
@@ -43,12 +43,13 @@ Python, Node.js and Meteor.
 %prep
 %setup -n passenger-release-%{version}
 
-%patch0 -p1 -b .tmpdir
-%patch1 -p1 -b .emptymsglog
-%patch2 -p1 -b .disablehtaccess
+# No -b backups: the install step ships this whole tree, so backups would ship too
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %if 0%{?rhel} >= 10
-%patch3 -p1 -b .hostflagsupport
+%patch3 -p1
 # Package consuming this src ball will need:
 # %if 0%{?rhel} >= 10
 # export LIBEV_CONFIGURE_HOST=x86_64-redhat-linux-gnu
@@ -94,6 +95,9 @@ fi
 /opt/cpanel/ea-passenger-src/
 
 %changelog
+* Thu Oct 15 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.2.0-3
+- EA-13596: Stop shipping patch backup files in the Passenger source tree
+
 * Wed Oct 07 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.2.0-2
 - EA-13588: Vendor the cxx_hinted_parser submodule so builds are deterministic
 
