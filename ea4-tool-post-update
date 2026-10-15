@@ -60,7 +60,7 @@ sub run {
 
     my $changelog = "ea-passenger-src was updated from v$old_ver to v$new_ver";
 
-    for my $repo (qw(ea-apache24-mod-passenger ea-nginx-passenger)) {
+    for my $repo (qw(ea-apache24-mod-passenger ea-nginx-passenger ea-ruby27-passenger)) {
         _update_dependent_pkg( $new_ver, $repo, $case, $changelog );
         print "Done!\n";
     }
