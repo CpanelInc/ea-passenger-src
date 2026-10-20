@@ -29,24 +29,21 @@ sub run {
     my $response         = ea4_tool::util::http()->mirror( $tarball_url, $tarball_location );
     die "Unable to download the tarball ($tarball_url)" if ( !$response->{success} );
 
-    # Update the include binary for debian to the newest sourceball version
-    my $file  = 'debify/debian/source/include-binaries';
-    my @lines = path($file)->lines;
-    foreach my $line (@lines) {
-        if ( $line =~ /\Q$old_ver\E/ ) {
-            $line =~ s/\Q$old_ver\E/$new_ver/;
-        }
+    # Point the debian build (include list, tarball hint, install path rewrite) at the new sourceball version
+    my @files = ( 'debify/debian/source/include-binaries', 'debify/settings.json' );
+    for my $file (@files) {
+        my @lines = path($file)->lines;
+        s/\Q$old_ver\E/$new_ver/g for @lines;
+        path($file)->spew(@lines);
     }
 
-    path($file)->spew(@lines);
-
-    print "Committing change to $file …\n";
+    print "Committing changes to @files …\n";
     my $git    = ea4_tool::util::git($CWD);
     my $branch = $git->current_branch();
 
     $git->run( add    => $tarball_location );
-    $git->run( add    => $file );
-    $git->run( commit => "-m", "$branch: ea4-tool-post-update update include-binaries to new tarball" );
+    $git->run( add    => @files );
+    $git->run( commit => "-m", "$branch: ea4-tool-post-update update debian sourceball references to new tarball" );
     ea4_tool::util::pushup( $git, $branch );
 
     print "Done!\n";
@@ -60,7 +57,7 @@ sub run {
 
     my $changelog = "ea-passenger-src was updated from v$old_ver to v$new_ver";
 
-    for my $repo (qw(ea-apache24-mod-passenger ea-nginx-passenger)) {
+    for my $repo (qw(ea-apache24-mod-passenger ea-nginx-passenger ea-ruby27-passenger)) {
         _update_dependent_pkg( $new_ver, $repo, $case, $changelog );
         print "Done!\n";
     }

@@ -1,9 +1,9 @@
 {
    "ignore_clean" : 1,
-   "source_tarball_regex": "release-6.2.0",
+   "source_tarball_regex": "release-6.2.1",
    "put_source0_in_sources": 1,
-   "adjust_install_file_src": [ [ "^debian/tmp/(.*)", "$1" ], [ "^(.*)passenger-release-6\\.1\\.8(.*)$", "$1passenger-release-6.2.0$2" ] ],
-   "adjust_install_file_dst": [ [ "^(.*)passenger-release-6\\.1\\.8(.*)$", "$1passenger-release-6.2.0$2" ] ],
+   "adjust_install_file_src": [ [ "^debian/tmp/(.*)", "$1" ], [ "^(.*)passenger-release-[0-9.]+(.*)$", "$1passenger-release-6.2.1$2" ] ],
+   "adjust_install_file_dst": [ [ "^(.*)passenger-release-[0-9.]+(.*)$", "$1passenger-release-6.2.1$2" ] ],
    "remove_from_patches": [
       "0004-Fix-AlmaLinux-10-build-add-host-flag-support-for-lib.patch"
    ],
@@ -11,6 +11,8 @@
       "\\.tmpdir$",
       "\\.emptymsglog$",
       "\\.disablehtaccess$",
+      "\\.hostflagsupport$",
+      "\\.orig$",
       "boost/regex/v4/match_results\\.hpp$",
       "boost/regex/v4/u32regex_token_iterator\\.hpp$",
       "boost/regex/v4/unicode_iterator\\.hpp$",
